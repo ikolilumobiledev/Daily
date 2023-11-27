@@ -1,20 +1,52 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Login from './Screens/Login/Logins';
+import Home from './Screens/Home/Home';
+import BottomTabNavigator from './Screens/BottomTap/BottomTapNavigator';
+import WelcomeScreen from './Screens/Communication/Welcome';
+import HealthScreen from './Screens/Health/Health';
+import EducationScreen from './Screens/Education/Education';
+import TrackingScreen from './Screens/Tracking/Tracking';
+import TeacherScreen from './Screens/Teacher/Teacher';
+import ParentScreen from './Screens/Parent/Parent';
+// import HistoryScreen from './Screens/Feeds/History';
+import FoodScreen from './Screens/Food/Food';
+import MyWeekScreen from './Screens/MyWeek/MyWeek';
+import MemoriesScreen from './Screens/Memories/Memories';
+import Stores from './Screens/Stores/Store';
 
-export default function App() {
+
+
+
+
+const Stack = createStackNavigator();
+
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" options={{ headerShown: false }} component={Home} />
+        <Stack.Screen name="Login"  options={{ headerShown: false }}  component={Login} />
+        <Stack.Screen name="BottomTapNavigator" component={BottomTabNavigator} /> 
+        <Stack.Screen name="Welcome"  options={{ headerShown: false }}  component={WelcomeScreen} /> 
+        <Stack.Screen name="Tracking" options={{ headerShown: false }} component={TrackingScreen} /> 
+        <Stack.Screen name="Education" component={EducationScreen} /> 
+        <Stack.Screen name="Health" options={{ headerShown: false }} component={HealthScreen} /> 
+        <Stack.Screen name="Teacher" component={TeacherScreen} /> 
+        <Stack.Screen name="Parent" options={{ headerShown: false }} component={ParentScreen} /> 
+        <Stack.Screen name="Food" options={{ headerShown: false }} component={FoodScreen} /> 
+        <Stack.Screen name="MyWeek" options={{ headerShown: false }} component={MyWeekScreen} /> 
+        <Stack.Screen name="Memories" options={{ headerShown: false }} component={MemoriesScreen} /> 
+        <Stack.Screen name="Stores" options={{ headerShown: false }} component={Stores} /> 
+
+        {/* <Stack.Screen name="History" options={{ headerShown: false }} component={HistoryScreen} />  */}
+
+
+        {/* Add other screens here */}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
+
