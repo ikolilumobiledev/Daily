@@ -1,11 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+// import * as Location from 'expo-location';
 
 const Home = ({ navigation }) => {
+  // const [currentLocation, setCurrentLocation] = useState(null);
+  // const [locationName, setLocationName] = useState(null);
+  // const [isLoading, setIsLoading] = useState(true);
+
+
+    //  useEffect(() => {
+    // const fetchLocation = async () => {
+    //   try {
+    //     // Get the current location without explicitly requesting permission
+    //     const location = await Location.getCurrentPositionAsync({});
+    //     setCurrentLocation(location.coords);
+
+    //     // Perform geocoding to get the location name
+    //     const geocodingResult = await reverseGeocode(location.coords);
+    //     setLocationName(geocodingResult);
+
+    //     setIsLoading(false); // Set loading to false when location details are fetched
+
+    //   } catch (error) {
+    //     console.error('Error getting location:', error);
+    //     setIsLoading(false); 
+    //   }
+    // };
+
+  //   fetchLocation();
+  // }, []);
+
+  // const reverseGeocode = async (coords) => {
+  //   try {
+  //     const geocoding = await Location.reverseGeocodeAsync(coords);
+
+  //     if (geocoding && geocoding.length > 0) {
+  //       const result = geocoding[0];
+  //       console.log('Full Geocoding Result:', result);
+
+  //       // Construct a readable address using available fields
+  //       const readableAddress = [result.district, result.city, result.region, result.country].filter(Boolean).join(', ');
+  //       console.log('Readable Address:', readableAddress);
+
+  //       return readableAddress;
+  //     } else {
+  //       console.log('Geocoding result is empty.');
+  //       return 'Unknown Location';
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during geocoding:', error);
+  //     return 'Error getting location name';
+  //   }
+  // };
+
   const navigateToStore = () => {
-    navigation.navigate('Stores');
-  };
+  {
+    navigation.navigate('Stores', {
+    //   location: {
+    //     currentLocation: currentLocation,
+    //     locationName: locationName,
+    //   },
+     });
+  }
+};
+
 
   return (
     <ImageBackground
@@ -16,6 +75,11 @@ const Home = ({ navigation }) => {
       <View style={styles.overlay}>
         <Text style={styles.title}>Welcome to Ameriless</Text>
         <Text style={styles.subtitle}>Shop effortlessly</Text>
+        {/* {locationName && (
+          <View style={styles.locationNameContainer}>
+            <Text style={styles.locationNameText}>{locationName}</Text>
+          </View>
+        )} */}
       </View>
       <TouchableOpacity style={styles.button} onPress={navigateToStore}>
         <Text style={styles.buttonText}>Go to Stores</Text>
@@ -65,9 +129,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 5,
   },
+  locationNameContainer: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    right: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: 8,
+    borderRadius: 8,
+  },
+  locationNameText: {
+    fontSize: 16,
+  },
 });
 
 export default Home;
+
 
 
 

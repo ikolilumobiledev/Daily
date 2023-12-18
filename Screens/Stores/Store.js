@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 
-const Stores = () => {
+const Stores = ({route}) => {
   const navigation = useNavigation();
+  const { location } = route.params;
+
+
+
 
   const popularStores = [
     'Amazon', 'eBay', 'Walmart', 'Academy', 'K.mart', 'Belk', 'Best Buy', 'Overstock',
@@ -12,9 +16,8 @@ const Stores = () => {
   ];
 
   const navigateToLogin = () => {
-    // Navigate to the login screen here
-    // For example, using React Navigation:
     navigation.navigate('Login');
+    location
   };
 
   const renderStoreCard = ({ item }) => (
@@ -22,10 +25,21 @@ const Stores = () => {
       <Text style={styles.storeName}>{item}</Text>
     </TouchableOpacity>
   );
+  useEffect(() => {
+    // Log the entire location object when the component mounts
+    console.log('Full Geocoding Result:', location);
+
+    // Add any other logic you need here
+
+    // Make sure to cleanup any resources if necessary when the component unmounts
+    return () => {
+      // Cleanup logic if needed
+    };
+  }, [location]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Popular Online Stores</Text>
+      <Text style={styles.title}>Choose your Store you want to shop in</Text>
       <FlatList
         data={popularStores}
         keyExtractor={(item, index) => index.toString()}
@@ -40,6 +54,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor:'#001524'
   },
   title: {
     fontSize: 24,
@@ -47,6 +62,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginHorizontal: 55,
     marginBottom: 30,
+    color:'white'
   },
   storeCard: {
     flex: 1,
