@@ -26,6 +26,12 @@ const CheckoutScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true);
   const isEmailValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isPhoneNumberValid = (phoneNumber) => /^\d{10}$/.test(phoneNumber);
+
+
+
+
+
+
   const fetchLocation = useCallback(async () => {
     try {
       const location = await Location.getCurrentPositionAsync({});
@@ -149,7 +155,7 @@ const CheckoutScreen = ({navigation}) => {
     setDeliveryInstructions('');
   };
   const LocationCard = ({ locationInfo }) => {
-    console.log('LocationInfo:', locationInfo); // Log the locationInfo
+    // console.log('LocationInfo:', locationInfo); // Log the locationInfo
     return (
       <Card style={styles.locationCard}>
         <Card.Content>
@@ -259,7 +265,7 @@ const CheckoutScreen = ({navigation}) => {
                     if (!fullName || !phoneNumber || !emailAddress) {
                       Alert.alert('Error', 'Full Name, Phone Number, and Email Address are compulsory');
                     } else {
-                      navigation.navigate('Payment');
+                      navigation.navigate('Choose');
                     }
                   }}
                   disabled={!fullName || !phoneNumber || !emailAddress} // Disable the button if required fields are empty

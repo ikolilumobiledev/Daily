@@ -16,6 +16,14 @@ import MemoriesScreen from './Screens/Memories/Memories';
 import Stores from './Screens/Stores/Store';
 import CartScreen from './Screens/Cart/Cart';
 import PaymentScreen from './Screens/Payment/Payment';
+import store from './Screens/Store/Store';
+import ChooseScreen from './Screens/Choose/Choose';
+import { Provider } from 'react-redux';
+import SignUpScreen from './Screens/Sign/SignUP';
+
+
+
+
 
 
 
@@ -23,6 +31,7 @@ const Stack = createStackNavigator();
 
 function App() {
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" options={{ headerShown: false }} component={Home} />
@@ -40,14 +49,15 @@ function App() {
         <Stack.Screen name="Stores" options={{ headerShown: false }} component={Stores} /> 
         <Stack.Screen name="Cart" options={{ headerShown: false }} component={CartScreen} /> 
         <Stack.Screen name="Checkout" options={{ headerShown: false }} component={CheckoutScreen} /> 
-        <Stack.Screen name="Payment" options={{ headerShown: false }} component={PaymentScreen} /> 
-
-        {/* <Stack.Screen name="History" options={{ headerShown: false }} component={HistoryScreen} />  */}
-
+        <Stack.Screen name="Payment" options={{ headerShown: false }} component={PaymentScreen} />
+        <Stack.Screen name="Choose" options={{ headerShown: false }} component={ChooseScreen} />
+        <Stack.Screen name="SignUP" options={{ headerShown: false }} component={SignUpScreen} />
 
         {/* Add other screens here */}
       </Stack.Navigator>
     </NavigationContainer>
+        </Provider>
+
   );
 }
 

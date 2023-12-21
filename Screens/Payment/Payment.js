@@ -1,79 +1,66 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef } from "react";
+import { Paystack, paystackProps } from "react-native-paystack-webview";
+import { View, TouchableOpacity, Text, StyleSheet, Image } from "react-native";
 
-const PaymentScreen = () => {
-  const handlePayment = (paymentMethod) => {
-    // Implement logic to handle payment with the selected payment method
-    console.log(`Processing payment with ${paymentMethod}`);
-  };
+export default function Payment() {
+  const paystackWebViewRef = useRef(paystackProps.PayStackRef);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Payment Screen</Text>
-      <View style={styles.paymentMethods}>
-        <TouchableOpacity
-          style={styles.paymentMethodButton}
-          onPress={() => handlePayment('Credit Card')}
-        >
-          <Text style={styles.paymentMethodText}>Credit Card</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.paymentMethodButton}
-          onPress={() => handlePayment('PayPal')}
-        >
-          <Text style={styles.paymentMethodText}>PayPal</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.paymentMethodButton}
-          onPress={() => handlePayment('Google Pay')}
-        >
-          <Text style={styles.paymentMethodText}>Google Pay</Text>
-        </TouchableOpacity>
-        {/* Add more payment methods as needed */}
-      </View>
-      <TouchableOpacity style={styles.payButton} onPress={() => handlePayment('Other')}>
-        <Text style={styles.payButtonText}>Pay Now</Text>
+      <Image source={require("../../assets/pay.png")} style={styles.image} />
+
+      <Paystack
+        paystackKey="pk_test_7953d775d4609d532c07d35f9a35760a7bde8d84"
+        paystackSecretKey="sk_test_163f8586ac6f545f965ef8f133becacf365969bb"
+        billingEmail="franciskontoh4@gmail.com"
+        amount={1}
+        billingName="Francis Kontoh"
+        billingMobile="0592486117"
+        currency="GHS"
+        onCancel={(e) => {
+          console.log(e);
+        }}
+        onSuccess={(res) => {
+          console.log(res);
+        }}
+        ref={paystackWebViewRef}
+      />
+      <TouchableOpacity
+        onPress={() => paystackWebViewRef.current.startTransaction()}
+        style={styles.paystack}
+      >
+        <Text style={styles.pay}>Pay Now</Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
+  paystack: {
+    justifyContent: "center",
+    alignItems: "center",
+    minWidth: "60%",
+    backgroundColor: "#F9A826",
+    padding: 10,
+    borderRadius: 15,
+    marginBottom:100,
+    marginRight:70
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 15,
+    marginTop: 10,
+    marginLeft:90
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
+  image: {
+    flex: 1,
+    resizeMode: "contain",
+    width: 550,
   },
-  paymentMethods: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-  },
-  paymentMethodButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-  },
-  paymentMethodText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  payButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 5,
-  },
-  payButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
+  pay: {
+    color: "white",
   },
 });
 
-export default PaymentScreen;

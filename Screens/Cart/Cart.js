@@ -340,54 +340,53 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from
 import { Card } from 'react-native-paper';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { connect, useDispatch } from 'react-redux';
 
+const CartScreen = ({  route, navigation }) => {
+  const dispatch = useDispatch();
 
-const CartScreen = ({ route, navigation }) => {
     console.log(route,'CART');
   
     const { cartItems } = route.params || { cartItems: [] };
     const [locationName, setLocationName] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      // Dispatch the 'SET_CART_ITEMS' action when the component mounts
+      dispatch({ type: 'SET_CART_ITEMS', payload: route.params?.cartItems || [] });
+    }, [dispatch, route.params?.cartItems]);
   
     useEffect(() => {
-      // Store cartItems and locationName separately whenever aggregatedCartItems changes
-      const storeData = async () => {
+      const loadCartItems = async () => {
         try {
-          await AsyncStorage.setItem('cartItems', JSON.stringify(aggregatedCartItems));
-          await AsyncStorage.setItem('locationName', JSON.stringify(locationName));
-        } catch (error) {
-          console.error('Error storing data:', error);
+
+          const storedCartItems = await AsyncStorage.getItem('cartItems');
+          if (storedCartItems !== null) {
+            dispatch({ type: 'SET_CART_ITEMS', payload: JSON.parse(storedCartItems) });
+          }
+        }   catch (error) {
+
+          console.error('Error loading cart items:', error);
         }
       };
-
-    storeData();
-  }, [aggregatedCartItems, locationName]);
-
+  
+      loadCartItems();
+    }, [dispatch]);
 
 
 
   // Use AsyncStorage to load stored data on component mount
   useEffect(() => {
-    const loadData = async () => {
+    const storeData = async () => {
       try {
-        const storedCartItems = await AsyncStorage.getItem('cartItems');
-        const storedLocationName = await AsyncStorage.getItem('locationName');
-  
-        if (storedCartItems !== null) {
-          setAggregatedCartItems(JSON.parse(storedCartItems));
-        }
-  
-        if (storedLocationName !== null) {
-          setLocationName(JSON.parse(storedLocationName));
-        }
+        await AsyncStorage.setItem('cartItems', JSON.stringify(cartItems));
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('Error storing cart items:', error);
       }
     };
-  
-    loadData();
-  }, []);
-  
+
+    storeData();
+  }, [cartItems]);
+
 
     const fetchLocation = useCallback(async () => {
       try {
@@ -501,10 +500,12 @@ const CartScreen = ({ route, navigation }) => {
     // Remove the item with the specified ID from the cart
     const updatedCartItems = aggregatedCartItems.filter((item) => item.id !== itemId);
     setAggregatedCartItems(updatedCartItems);
-
-    // Update the cartItems in the route.params without navigating
-    route.params.cartItems = updatedCartItems;
+    
+    // Dispatch an action to update the global state in Redux
+    dispatch({ type: 'REMOVE_FROM_CART', payload: itemId });
   };
+  
+  
 
   const renderItem = ({ item }) => (
     <Card style={styles.cartItemCard}>
@@ -702,5 +703,8 @@ const styles = StyleSheet.create({
   
 });
 
-export default CartScreen;
+const mapStateToProps = (state) => ({
+  cartItems: state.cartItems,
+});
 
+export default connect(mapStateToProps)(CartScreen);

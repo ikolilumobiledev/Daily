@@ -225,9 +225,7 @@
 
 
 
-
-
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -242,11 +240,9 @@ import {
 } from 'react-native';
 import * as Location from 'expo-location';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
+import { useDispatch } from 'react-redux';
 
-
-
-const WelcomeScreen = ({ navigation,route }) => {
-  // console.log('Navigation Prop:', navigation);
+const WelcomeScreen = ({ navigation, route }) => {
   const [productData, setProductData] = useState(generateProductData());
   const [searchVisible, setSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -260,19 +256,26 @@ const WelcomeScreen = ({ navigation,route }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [favoritedProducts, setFavoritedProducts] = useState([]);
 
-
-  
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // Fetch the updated cart items and favorited products when the WelcomeScreen is in focus
-      setCartItems(route.params?.cartItems || []);
       setFavoritedProducts(route.params?.favoritedProducts || []);
+  
+      // Update the Redux store with the latest cart items
+      const updatedCartItems = route.params?.cartItems || [];
+      dispatch({ type: 'SET_CART_ITEMS', payload: updatedCartItems });
+  
+      // Log the dispatch action and payload
+      console.log('Dispatch Action: SET_CART_ITEMS');
+      console.log('Dispatch Payload:', updatedCartItems);
     });
-
+  
     // Cleanup effect
     return unsubscribe;
   }, [navigation, route.params?.cartItems, route.params?.favoritedProducts]);
+  
 
   // useEffect(() => {
   //   const unsubscribe = navigation.addListener('focus', () => {
@@ -296,6 +299,9 @@ const WelcomeScreen = ({ navigation,route }) => {
   //   setCartItems(updatedCartItems);
   // };
 
+
+
+  
   useEffect(() => {
     const fetchLocation = async () => {
       try {
@@ -321,6 +327,8 @@ const WelcomeScreen = ({ navigation,route }) => {
         setIsLoading(false); // Set loading to false in case of an error
       }
     };
+
+
     const handleProductClick = (product) => {
       setSelectedProduct(product);
       setModalVisible(true);
@@ -329,25 +337,23 @@ const WelcomeScreen = ({ navigation,route }) => {
     fetchLocation();
   }, []);
   
+  
   const reverseGeocode = async (coords) => {
     try {
       const geocoding = await Location.reverseGeocodeAsync(coords);
-  
+
       if (geocoding && geocoding.length > 0) {
         const result = geocoding[0];
-        console.log('Welcome locatio:', result);
-  
-        // Construct a readable address using available fields
-        const readableAddress = [result.district, result.city, result.region, result.country].filter(Boolean).join(', ');
-        console.log('Readable Address:', readableAddress);
-  
-        // Log the entire result
-        console.log('Full Geocoding Result:', result);
-  
+
+        // Extract relevant information from the result
+        const { city, country, region, name, subregion } = result;
+        const readableAddress = [city, region, country].filter(Boolean).join(', ');
+
         return {
-          city: result.city || 'Unknown',
-          country: result.country || 'Unknown',
-          name: result.name || 'Unknown',
+          city: city || 'Unknown',
+          country: country || 'Unknown',
+          name: name || 'Unknown',
+          subregion: subregion || 'Unknown',
           readableAddress: readableAddress || 'Unknown Location',
         };
       } else {
@@ -356,6 +362,7 @@ const WelcomeScreen = ({ navigation,route }) => {
           city: 'Unknown',
           country: 'Unknown',
           name: 'Unknown',
+          subregion: 'Unknown',
           readableAddress: 'Unknown Location',
         };
       }
@@ -365,6 +372,7 @@ const WelcomeScreen = ({ navigation,route }) => {
         city: 'Error',
         country: 'Error',
         name: 'Error',
+        subregion: 'Error',
         readableAddress: 'Error getting location name',
       };
     }
